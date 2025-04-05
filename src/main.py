@@ -41,6 +41,8 @@ def analyser_performance_heures(df):
     
     # Demander à l'utilisateur de spécifier les colonnes
     print("\nVeuillez spécifier les noms exacts des colonnes pour:")
+    # c'est la colonne qui contient les scores de performance vous devez être capable de lire le fichier excel
+    # pour trouver la colonne qui contient les scores de performance (indice ça commence par "P")
     colonne_performance = input("Colonne des scores de performance: ")
     colonne_engagement = input("Colonne de l'engagement (EngagementSurvey): ")
     
@@ -57,6 +59,8 @@ def analyser_performance_heures(df):
             'Needs Improvement': 2,
             'PIP': 1
         }
+        # cette ligne de code est la conversion des scores de performance en valeurs numériques
+        # grace à la fonction map qui permet de remplacer les valeurs de la colonne par les valeurs numériques
         df['PerformanceScore_Numeric'] = df[colonne_performance].map(performance_mapping)
         
         # Calcul de la corrélation entre performance et engagement
@@ -92,16 +96,21 @@ def analyser_facteurs_performance(df):
             print(f"\nAnalyse de la performance par {var}:")
             
             # Distribution des scores de performance par catégorie
+            # la fonction pd.crosstab permet de créer un tableau de contingence
             distribution = pd.crosstab(df[var], df[colonne_performance])
             print("\nDistribution des scores de performance:")
             print(distribution)
             
             # Pourcentage de chaque niveau de performance par catégorie
+            # la fonction div permet de diviser chaque valeur du tableau de contingence par la somme de la ligne
+            # et de multiplier par 100 pour avoir un pourcentage
             pourcentages = distribution.div(distribution.sum(axis=1), axis=0) * 100
             print("\nPourcentages par niveau de performance:")
             print(pourcentages.round(2))
-            
+                
             # Test du chi-carré pour vérifier l'indépendance
+            # la fonction stats.chi2_contingency permet de calculer le test du chi-carré
+            # et de retourner la valeur du chi-carré et la p-value
             chi2, p_value = stats.chi2_contingency(distribution)[:2]
             print(f"\nTest du chi-carré - p-value: {p_value:.4f}")
             
